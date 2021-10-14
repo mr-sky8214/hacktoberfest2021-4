@@ -1,0 +1,118 @@
+// { Driver Code Starts
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+using namespace std;
+
+struct Node {
+    int data;
+    struct Node* next;
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+
+
+ // } Driver Code Ends
+
+
+/* Function to mergesort the linked list
+   It should return head of the modified list  */
+   
+Node *getMiddle(Node *head)
+{
+    Node *slow=head, *fast = head->next;
+    while(slow && fast && fast->next)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    
+   return slow;
+    
+}
+   
+Node* sortedMerge(Node* head_A, Node* head_B)  
+{  
+    // code here
+    // Node* res = NULL;
+    
+    if(head_A == NULL)
+        return head_B;
+    
+    if(head_B == NULL)
+        return head_A;
+        
+        
+    if(head_A->data <= head_B->data)
+    {
+        head_A->next = sortedMerge(head_A->next,head_B);
+        return head_A;
+    }
+    else
+    {
+        head_B->next = sortedMerge(head_A,head_B->next);
+        return head_B;
+    }
+    
+    // return res;
+}     
+Node* mergeSort(Node* head) {
+    // your code here
+    if(head == NULL || head->next == NULL)
+        return head;
+        
+        
+   
+    Node *middle = getMiddle(head);
+    Node *mid = middle->next;
+    middle->next = NULL;
+    
+   
+    
+    Node *headA = mergeSort(head);
+    Node *headB = mergeSort(mid);
+    
+    Node *ans = sortedMerge(headA,headB);
+    return ans;
+    // return NULL;
+    
+    
+    
+}
+
+
+// { Driver Code Starts.
+
+void printList(Node* node) {
+    while (node != NULL) {
+        printf("%d ", node->data);
+        node = node->next;
+    }
+    printf("\n");
+}
+
+void push(struct Node** head_ref, int new_data) {
+    Node* new_node = new Node(new_data);
+
+    new_node->next = (*head_ref);
+    (*head_ref) = new_node;
+}
+
+int main() {
+    long test;
+    cin >> test;
+    while (test--) {
+        struct Node* a = NULL;
+        long n, tmp;
+        cin >> n;
+        for (int i = 0; i < n; i++) {
+            cin >> tmp;
+            push(&a, tmp);
+        }
+        a = mergeSort(a);
+        printList(a);
+    }
+    return 0;
+}  // } Driver Code Ends
